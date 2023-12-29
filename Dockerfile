@@ -12,6 +12,11 @@ RUN apt-get update && \
 # Copy the program folders into the container
 COPY . /usr/local/WorldOfGames
 
+
+#Install Docker inside the container
+RUN curl -fsSL https://get.docker.com | sh
+
+
 # Grant execution permissions to the entrypoint script
 RUN chmod +x /usr/local/WorldOfGames/entrypoint.sh
 # Install project dependencies
