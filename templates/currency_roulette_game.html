@@ -1,0 +1,25 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Currency Roulette Game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <h1>Currency Roulette Game</h1>
+    <form action="/currency-roulette-game" method="post">
+        <label for="guess">Your Guess:</label>
+        <input type="number" name="guess" id="guess" step="0.01" required>
+        <br><br>
+        <label for="difficulty">Select Difficulty:</label>
+        <select name="difficulty" id="difficulty">
+            <option value="1">Easy</option>
+            <option value="2">Medium</option>
+            <option value="3">Hard</option>
+        </select>
+        <br><br>
+        <input type="submit" value="Submit Guess">
+    </form>
+</body>
+</html>

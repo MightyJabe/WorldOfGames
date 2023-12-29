@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Memory Game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script type="text/javascript">
+        function hideSequence() {
+            var sequenceDiv = document.getElementById('sequence');
+            sequenceDiv.style.display = 'none';
+            var guessForm = document.getElementById('guessForm');
+            guessForm.style.display = 'block';
+        }
+        setTimeout(hideSequence, {{ display_time }} * 1000);
+    </script>
+</head>
+<body>
+    <h1>Memory Game</h1>
+    <div id="sequence">{{ sequence }}</div>
+    <form id="guessForm" action="/memory-game" method="post" style="display: none;">
+        {% for _ in sequence %}
+            <input type="number" name="user_guess" required>
+        {% endfor %}
+        <input type="hidden" name="sequence" value="{{ sequence|join(',') }}">
+        <input type="hidden" name="difficulty" value="{{ difficulty }}">
+        <input type="submit" value="Submit Guess">
+    </form>
+    <a href="/memory-game">Start Over</a>
+    <br>
+    <a href="/">Back to Home</a>
+</body>
+</html>
