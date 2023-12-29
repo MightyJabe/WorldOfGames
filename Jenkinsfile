@@ -48,7 +48,7 @@ pipeline {
                 script {
                     // Stop and remove the running container
                     docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}").inside {
-                        sh 'pkill -f "python3 /usr/local/WorldOfGames/MainGame.py"'
+                        sh 'pkill -f "python3 /usr/local/WorldOfGames/flask_app.py"'
                     }
 
                     // Push the Docker image to DockerHub
