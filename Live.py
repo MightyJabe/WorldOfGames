@@ -56,5 +56,4 @@ def get_difficulty():
             print("Invalid input. Please enter a valid number.")
 
 
-# Example usage:
-load_game()
+

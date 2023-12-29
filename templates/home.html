@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome to World of Games</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    {% if show_games %}
+        <h1>Welcome {{ name }} to the World of Games (WoG)</h1>
+        <p>Here you can find many cool games to play.</p>
+        <h2>Please choose a game to play:</h2>
+        <ul>
+            <li><a href="/memory-game">Memory Game</a></li>
+            <li><a href="/guess-game">Guess Game</a></li>
+            <li><a href="/currency-roulette-game">Currency Roulette</a></li>
+            <li><a href="/scores">Score</a></li>
+        </ul>
+    {% else %}
+        <form action="/" method="post">
+            <label for="name">Enter your name:</label>
+            <input type="text" id="name" name="name" required>
+            <input type="submit" value="Enter">
+        </form>
+    {% endif %}
+</body>
+</html>
