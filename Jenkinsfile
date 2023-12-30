@@ -40,9 +40,12 @@ pipeline {
                 script {
                     // Using credentials binding
                     withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_HUB_USER', passwordVariable: 'DOCKER_HUB_PASS')]) {
-                        // Login to Docker Hub
-                        sh "echo $DOCKER_HUB_PASS | docker login -u $DOCKER_HUB_USER --password-stdin"
-
+                        // Write the Docker password to a temporary file and use it to login
+                        sh """
+                            echo $DOCKER_HUB_PASS > docker_password.txt
+                            cat docker_password.txt | docker login -u $DOCKER_HUB_USER --password-stdin
+                            rm docker_password.txt
+                        """
                         // Push the Docker image to DockerHub
                         docker.withRegistry('https://registry.hub.docker.com', '') {
                             docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}").push()
