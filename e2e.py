@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.chrome.options import Options
 
 # The URL of your application's homepage
 HOMEPAGE_URL = 'http://localhost:5000'  # Replace with the correct URL
@@ -20,7 +21,6 @@ def test_games_links(driver, game_links_xpath):
         try:
             game_link = driver.find_element(By.XPATH, game_xpath)
             game_link.click()
-            # Here you could add more checks, e.g., for page content
             driver.back()  # Go back to the homepage
         except NoSuchElementException:
             print(f"Game link with XPath '{game_xpath}' not found on the homepage.")
@@ -30,7 +30,12 @@ def test_games_links(driver, game_links_xpath):
 
 
 if __name__ == "__main__":
-    web_driver = webdriver.Chrome()  # Replace with the browser you're using
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+
+    web_driver = webdriver.Chrome(options=chrome_options)
     try:
         web_driver.get(HOMEPAGE_URL)
         result = test_games_links(web_driver, GAME_LINKS_XPATH)
@@ -39,4 +44,4 @@ if __name__ == "__main__":
         else:
             print("Some game links could not be reached from the homepage.")
     finally:
-        web_driver.quit()  # Make sure to quit the driver to close the browser window
+        web_driver.quit()  # Quit the driver
