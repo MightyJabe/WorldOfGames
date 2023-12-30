@@ -24,7 +24,7 @@ pipeline {
         stage('Run') {
             steps {
                 script {
-                    docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}").withRun('-p 8777:8777 -v $(pwd)/scores.txt:/usr/local/WorldOfGames/scores.txt') { c ->
+                    docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}").withRun('-p 8777:8777') { c ->
                         // Run additional commands if needed before tests
                         sh 'sleep 10'  // Example: Wait for the application to start
                     }
