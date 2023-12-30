@@ -55,7 +55,7 @@ pipeline {
                     }
 
                     // Push the Docker image to DockerHub
-                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials-id') {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
                         docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}").push()
                     }
                 }
