@@ -35,13 +35,13 @@ pipeline {
                 }
             }
         }
-        stage('Finalize') {
+                stage('Finalize') {
             steps {
                 script {
                     // Using credentials binding
                     withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_HUB_USER', passwordVariable: 'DOCKER_HUB_PASS')]) {
-                        // Login to Docker Hub
-                        sh "echo $DOCKER_HUB_PASS | docker login -u $DOCKER_HUB_USER --password-stdin"
+                        // Login to Docker Hub in a more secure manner
+                        sh 'echo "$DOCKER_HUB_PASS" | docker login -u "$DOCKER_HUB_USER" --password-stdin'
 
                         // Push the Docker image to DockerHub
                         docker.withRegistry('https://registry.hub.docker.com', '') {
