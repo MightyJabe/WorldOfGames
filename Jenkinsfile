@@ -38,7 +38,7 @@ pipeline {
                 script {
                     docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}").inside('-p 8777:8777') {
                         // Run your Selenium tests
-                        sh "python3 flask_app.py"
+                        sh "python3 flask_app.py &"
                         sh 'sleep 15'  // Example: Wait for the application to start
                         sh 'python3 e2e.py'
                     }
