@@ -28,6 +28,8 @@ pipeline {
                         // Run additional commands if needed before tests
                         sh 'sleep 10'  // Example: Wait for the application to start
                         sh 'python3 e2e.py' // Run your Selenium tests
+                        sh 'sleep 180'  // Example: Wait for the application to start
+
                     }
                 }
             }
