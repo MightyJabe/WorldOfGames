@@ -1,18 +1,15 @@
 pipeline {
     agent any
-
     environment {
         DOCKER_IMAGE_NAME = 'thicksy/worldofgames'
         DOCKER_IMAGE_TAG = 'latest'
     }
-
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
-
         stage('Build') {
             steps {
                 script {
@@ -20,26 +17,24 @@ pipeline {
                 }
             }
         }
-
         stage('Run & Test') {
             steps {
                 script {
-                    // Run the Docker container in detached mode and capture the container ID
-                    CONTAINER_ID = sh(script: "docker run -d -p 8777:8777 ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}", returnStdout: true).trim()
-                    sh 'sleep 15'  // Example: Wait for the application to start
+                    // Start the container in detached mode
+                    def app = docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}").run("-d -p 8777:8777")
 
-                    // Run your Selenium tests
-                    try {
-                        sh 'python3 e2e.py'
-                    } finally {
-                        // Stop and remove the Docker container
-                        sh "docker stop ${CONTAINER_ID}"
-                        sh "docker rm ${CONTAINER_ID}"
-                    }
+                    // Wait for the application to start
+                    sh 'sleep 15'
+
+                    // Run tests within the container
+                    sh "docker exec ${app.id} python3 /usr/local/WorldOfGames/e2e.py"
+
+                    // Stop and remove the container
+                    app.stop()
+                    app.remove()
                 }
             }
         }
-
         stage('Finalize') {
             steps {
                 script {
@@ -51,11 +46,9 @@ pipeline {
             }
         }
     }
-
     post {
         failure {
             echo 'One or more stages failed. Clean up and notify.'
-            // Add any additional steps or notifications on failure
         }
     }
 }
