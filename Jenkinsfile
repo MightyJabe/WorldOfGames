@@ -30,8 +30,8 @@ pipeline {
                     sh "docker exec ${app.id} python3 /usr/local/WorldOfGames/e2e.py"
 
                     // Stop and remove the container
-                    app.stop()
-                    app.remove()
+                    sh "docker stop ${app.id}"
+                    sh "docker rm ${app.id}"
                 }
             }
         }
