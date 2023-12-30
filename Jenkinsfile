@@ -39,7 +39,7 @@ pipeline {
             steps {
                 script {
                     // Using credentials binding
-                    withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'Thicksy', passwordVariable: 'P@JD+g<q_d4\aWmp')]) {
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_HUB_USER', passwordVariable: 'DOCKER_HUB_PASS')]) {
                         // Login to Docker Hub
                         sh "echo $DOCKER_HUB_PASS | docker login -u $DOCKER_HUB_USER --password-stdin"
 
