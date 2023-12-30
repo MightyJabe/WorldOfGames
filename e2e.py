@@ -4,7 +4,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.chrome.options import Options
 
 # The URL of your application's homepage
-HOMEPAGE_URL = 'http://localhost:5000'  # Replace with the correct URL
+HOMEPAGE_URL = 'http://localhost:8777/'  # Replace with the correct URL
 
 # XPaths to the game elements on the homepage
 GAME_LINKS_XPATH = [

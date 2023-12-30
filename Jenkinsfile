@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     environment {
+        // Define environment variables
         DOCKER_IMAGE_NAME = 'thicksy/worldofgames'
         DOCKER_IMAGE_TAG = 'latest'
     }
@@ -9,6 +10,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                // Check out the source code from the SCM (Source Code Management)
                 checkout scm
             }
         }
@@ -16,29 +18,23 @@ pipeline {
         stage('Build') {
             steps {
                 script {
+                    // Build the Docker image
                     docker.build("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}", '.')
                 }
             }
         }
 
-        stage('Run') {
+        stage('Run & Test') {
             steps {
                 script {
-                    docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}").withRun('-p 8777:8777 -v $(pwd)/scores.txt:/usr/local/WorldOfGames/scores.txt') { c ->
-                        // Run additional commands if needed before tests
-                        sh 'sleep 10'  // Example: Wait for the application to start
-                    }
-                }
-            }
-        }
+                    // Start the Docker container in detached mode and run tests
+                    def app = docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}").run("-d -p 8777:8777")
+                    sh 'sleep 15' // Wait for the application to start
+                    sh "docker exec ${app.id} python3 /usr/local/WorldOfGames/e2e.py" // Execute tests
 
-        stage('Test') {
-            steps {
-                script {
-                    docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}").inside {
-                        // Run your Selenium tests
-                        sh 'python3 e2e.py'
-                    }
+                    // Stop and remove the Docker container
+                    sh "docker stop ${app.id}"
+                    sh "docker rm ${app.id}"
                 }
             }
         }
@@ -46,14 +42,14 @@ pipeline {
         stage('Finalize') {
             steps {
                 script {
-                    // Stop and remove the running container
-                    docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}").inside {
-                        sh 'pkill -f "python3 /usr/local/WorldOfGames/flask_app.py"'
-                    }
+                    // Use credentials binding for Docker Hub login
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_HUB_USER', passwordVariable: 'DOCKER_HUB_PASS')]) {
+                        // Login to Docker Hub
+                        sh 'echo "$DOCKER_HUB_PASS" | docker login -u "$DOCKER_HUB_USER" --password-stdin'
 
-                    // Push the Docker image to DockerHub
-                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials-id') {
-                        docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}").push()
+                        // Tag and push the Docker image to Docker Hub
+                        sh 'docker tag ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}'
+                        sh 'docker push ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}'
                     }
                 }
             }
@@ -62,8 +58,8 @@ pipeline {
 
     post {
         failure {
+            // Notify or perform actions in case of failure
             echo 'One or more stages failed. Clean up and notify.'
-            // Add any additional steps or notifications on failure
         }
     }
 }
