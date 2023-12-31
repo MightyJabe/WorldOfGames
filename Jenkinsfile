@@ -28,7 +28,7 @@ pipeline {
             steps {
                 script {
                     // Start the Docker container in detached mode and run tests
-                    def app = docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}").run("-d -p 8777:8777")
+                    def app = docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}").run("-d -p 80:80")
                     sh 'sleep 15' // Wait for the application to start
                     sh "docker exec ${app.id} python3 /usr/local/WorldOfGames/e2e.py" // Execute tests
 
