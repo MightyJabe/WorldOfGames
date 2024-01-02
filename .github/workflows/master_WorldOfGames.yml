@@ -30,7 +30,7 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_ccdd0bed879e4394b6d84a664bdd0f1e }}/thicksy/worldofgames:${{ github.sha }}
+        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_ccdd0bed879e4394b6d84a664bdd0f1e }}/worldofgames:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -48,4 +48,4 @@ jobs:
         app-name: 'WorldOfGames'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_f7750d6eef5447a397d804e0afead35b }}
-        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_ccdd0bed879e4394b6d84a664bdd0f1e }}/thicksy/worldofgames:${{ github.sha }}'
+        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_ccdd0bed879e4394b6d84a664bdd0f1e }}/worldofgames:${{ github.sha }}'
